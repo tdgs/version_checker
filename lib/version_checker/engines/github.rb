@@ -1,4 +1,3 @@
-require 'version_checker/engine'
 require 'net/http'
 require 'json'
 
@@ -23,10 +22,6 @@ module VersionChecker
         user,repo = args
       end
       self.user,self.repo = user,repo
-    end
-
-    def fetch_version(v)
-
     end
 
     def tags
