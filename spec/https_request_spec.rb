@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'uri'
-require 'https_request'
 
 describe "https_request" do
 

@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "version_checker/version"
 require 'version_checker/engines/github'
-require 'https_request'
+require 'version_checker/https_request'
 
 
 module VersionChecker
