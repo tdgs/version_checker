@@ -1,5 +1,5 @@
 module VersionChecker
-  module Engine
+  class Engine
 
     # check for updates
     def updates?
