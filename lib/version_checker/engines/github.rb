@@ -9,6 +9,10 @@ module VersionChecker
 
     GITHUB_HOST = 'https://api.github.com'
 
+    # acceps:
+    # "tdgs/test-repo"
+    # {:user => 'tdgs', :repo => 'test-repo'}
+    # ('tdgs', test-repo')
     def initialize(*args)
       case args.count
       when 1
