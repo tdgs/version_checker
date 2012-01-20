@@ -37,11 +37,8 @@ module VersionChecker
     end
 
     def download_zip(filename)
-
+			VersionChecker.download(filename, latest_url)
     end
-
-    
-
   end
 
 end

@@ -1,69 +1,70 @@
-require 'net/http'
+require 'open-uri'
 require 'json'
 
 module VersionChecker
-  class GithubEngine
+	class GithubEngine
 
-    attr_accessor :user
-    attr_accessor :repo
+		attr_accessor :user
+		attr_accessor :repo
 
-    GITHUB_HOST = 'https://api.github.com'
+		GITHUB_HOST = 'https://api.github.com'
 
-    # acceps:
-    # "tdgs/test-repo"
-    # {:user => 'tdgs', :repo => 'test-repo'}
-    # ('tdgs', test-repo')
-    def initialize(*args)
-      case args.count
-      when 1
-        if args[0].is_a? String
-          (user,repo) = args[0].split "/"
-        else
-          user = args[0][:user]
-          repo = args[0][:repo]
-        end
-      when 2
-        user,repo = args
-      end
-      self.user,self.repo = user,repo
-    end
+		# acceps:
+		# "tdgs/test-repo"
+		# {:user => 'tdgs', :repo => 'test-repo'}
+		# ('tdgs', test-repo')
+		def initialize(*args)
+			case args.count
+			when 1
+				if args[0].is_a? String
+					(user,repo) = args[0].split "/"
+				else
+					user = args[0][:user]
+					repo = args[0][:repo]
+				end
+			when 2
+				user,repo = args
+			end
+			self.user,self.repo = user,repo
+		end
 
-    def tags
-      @tags ||= fetch_tags
-    end
+		def tags
+			@tags ||= fetch_tags
+		end
 
-    def latest_version
-      tags.keys.sort.last
-    end
+		def latest_version
+			tags.keys.sort.last
+		end
 
-    def latest_url(type = :zip)
-      version_url(latest_version, type)
-    end
+		def latest_url(type = :zip)
+			version_url(latest_version, type)
+		end
 
-    def version_url(version, type)
-      t = case type
-          when :zip then 'zipball_url'
-          when :tar then 'tarball_url'
-          else return nil
-          end
+		def version_url(version, type)
+			t = case type
+					when :zip then 'zipball_url'
+					when :tar then 'tarball_url'
+					else return nil
+					end
 
-      tags[version][t]
-    end
+			tags[version][t]
+		end
 
-    private
+		private
 
-    def make_request(url)
-      uri = URI(GITHUB_HOST + url)
-      JSON.parse(VersionChecker::https_request(uri))
-    end
+		def make_request(url)
+			open(GITHUB_HOST + url) do |r|
+				JSON.parse(r.read)
+			end
+		end
 
-    def fetch_tags
-      tags = make_request "/repos/#{user}/#{repo}/tags"
+		def fetch_tags
+			tags = make_request "/repos/#{user}/#{repo}/tags"
 
-      tags.inject({}) do |h, t|
-        h.merge({t['name'] => t})
-      end
-    end
+			tags.inject({}) do |h, t|
+				h.merge({t['name'] => t})
+			end
+		end
 
-  end
+	end
 end
